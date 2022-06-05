@@ -37,6 +37,32 @@ function formSubmitHandeler(event) {
     event.preventDefault();
 };
 
+function historyButtonHandeler(event) {
+    if(event.target.type === "button") {
+        let cityName = event.target.textContent;
+        let apiUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&units=imperial&appid=7347a58ac895179cbb99b48ec4541594";
+    
+        fetch(apiUrl)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            currentWeatherEl.innerHTML = "";
+            forecastEl.innerHTML = "";
+    
+            currentWeatherEl.appendChild(createCurrentWeather(data));
+    
+            for(let i = 1; i < 40; i += 8) {
+                let card = createCard(data, i);
+    
+                forecastEl.appendChild(card);
+            }
+        });
+    
+        addToHistory(cityName);
+    }
+};
+
 function createCurrentWeather(weatherObj) {
     let icon = "https://openweathermap.org/img/w/" + weatherObj.list[0].weather[0].icon + ".png"
 
@@ -139,31 +165,6 @@ function addHistoryButtons() {
     }
 };
 
-function historyButtonHandeler(event) {
-    if(event.target.type === "button") {
-        let cityName = event.target.textContent;
-        let apiUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&units=imperial&appid=7347a58ac895179cbb99b48ec4541594";
-    
-        fetch(apiUrl)
-        .then(function(response) {
-            return response.json();
-        })
-        .then(function(data) {
-            currentWeatherEl.innerHTML = "";
-            forecastEl.innerHTML = "";
-    
-            currentWeatherEl.appendChild(createCurrentWeather(data));
-    
-            for(let i = 1; i < 40; i += 8) {
-                let card = createCard(data, i);
-    
-                forecastEl.appendChild(card);
-            }
-        });
-    
-        addToHistory(cityName);
-    }
-};
 
 formEl.addEventListener("submit", formSubmitHandeler);
 historyContainerEl.addEventListener("click", historyButtonHandeler);
