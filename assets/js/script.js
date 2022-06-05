@@ -104,7 +104,7 @@ function createCard(weatherObj, i) {
     let p2El = document.createElement("p");
     let p3El = document.createElement("p");
 
-    cardEl.classList = "col-md-2 border border-dark card";
+    cardEl.classList = "col-lg-2 col-md-10 border border-dark card";
     cardBodyEl.classList = "card-body";
 
     h6El.setAttribute("class", "card-title");
