@@ -59,25 +59,8 @@ function formSubmitHandeler(event) {
         return response.json();
     })
     .then(function(data) {
-        let icon = "https://openweathermap.org/img/w/" + data.list[0].weather[0].icon + ".png"
-
-        let h2El = document.createElement("h2");
-        let imgEl = document.createElement("img");
-        let p1El = document.createElement("p");
-        let p2El = document.createElement("p");
-        let p3El = document.createElement("p");
-
-        h2El.textContent = data.city.name + " " + data.list[0].dt_txt.split(" ")[0];
-        imgEl.setAttribute("src", icon);
-        p1El.textContent = "Temp: " + data.list[0].main.temp;
-        p2El.textContent = "Wind: " + data.list[0].wind.speed;
-        p3El.textContent = "Humidity: " + data.list[0].main.humidity;
-
-        currentWeatherEl.appendChild(h2El);
-        currentWeatherEl.appendChild(imgEl);
-        currentWeatherEl.appendChild(p1El);
-        currentWeatherEl.appendChild(p2El);
-        currentWeatherEl.appendChild(p3El);
+        
+        currentWeatherEl.appendChild(createCurrentWeather(data));
 
         for(let i = 1; i < 40; i += 8) {
             let card = createCard(data, i);
@@ -90,6 +73,31 @@ function formSubmitHandeler(event) {
 
     event.preventDefault();
 };
+
+function createCurrentWeather(weatherObj) {
+    let icon = "https://openweathermap.org/img/w/" + weatherObj.list[0].weather[0].icon + ".png"
+
+    let weatherDisplayEl = document.createElement("div");
+    let h2El = document.createElement("h2");
+    let imgEl = document.createElement("img");
+    let p1El = document.createElement("p");
+    let p2El = document.createElement("p");
+    let p3El = document.createElement("p");
+
+    h2El.textContent = weatherObj.city.name + " " + weatherObj.list[0].dt_txt.split(" ")[0];
+    imgEl.setAttribute("src", icon);
+    p1El.textContent = "Temp: " + weatherObj.list[0].main.temp + " F";
+    p2El.textContent = "Wind: " + weatherObj.list[0].wind.speed + " MPH";
+    p3El.textContent = "Humidity: " + weatherObj.list[0].main.humidity + "%";
+
+    weatherDisplayEl.appendChild(h2El);
+    weatherDisplayEl.appendChild(imgEl);
+    weatherDisplayEl.appendChild(p1El);
+    weatherDisplayEl.appendChild(p2El);
+    weatherDisplayEl.appendChild(p3El);
+
+    return weatherDisplayEl;
+}
 
 function createCard(weatherObj, i) {
     let icon = "https://openweathermap.org/img/w/" + weatherObj.list[i].weather[0].icon + ".png"
@@ -114,13 +122,13 @@ function createCard(weatherObj, i) {
     cardBodyEl.appendChild(imgEl);
 
     p1El.setAttribute("class", "card-text");
-    p1El.textContent = "Temp: " + weatherObj.list[i].main.temp;
+    p1El.textContent = "Temp: " + weatherObj.list[i].main.temp + " F";
     cardBodyEl.appendChild(p1El);
     p2El.setAttribute("class", "card-text");
-    p2El.textContent = "Wind: " + weatherObj.list[i].wind.speed;
+    p2El.textContent = "Wind: " + weatherObj.list[i].wind.speed + " MPH";
     cardBodyEl.appendChild(p2El);
     p3El.setAttribute("class", "card-text");
-    p3El.textContent = "Humidity: " + weatherObj.list[i].main.humidity;
+    p3El.textContent = "Humidity: " + weatherObj.list[i].main.humidity + "%";
     cardBodyEl.appendChild(p3El);
 
     cardEl.appendChild(cardBodyEl);
