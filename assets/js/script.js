@@ -1,65 +1,27 @@
-//let apiUrl = 'https://api.openweathermap.org/data/2.5/forecast?q=minneapolis&units=imperial&appid=7347a58ac895179cbb99b48ec4541594';
+let historyArray;
+
 let formEl = document.querySelector("#form");
-
-/*
-data being displayed:
-    will be an abj
-
-    city  obj.city.name
-    date    obj.list[index].list.dt_txt
-    weather icon    obj.listindex[].weather[0].icon
-    wind    obj.list[index].wind.speed
-    humidity obj.list[index].main.humidity
-might need seperate API call
-    UV index 
-*/
-
+let historyContainerEl = document.querySelector("#history");
 let currentWeatherEl = document.querySelector("#current-weather");
 let forecastEl = document.querySelector("#forecast");
 
-// fetch(apiUrl)
-//     .then(function(response) {
-//         return response.json();
-//     })
-//     .then(function(data) {
-//         console.log(data);
-
-//         let h2El = document.createElement("h2");
-//         let p1El = document.createElement("p");
-//         let p2El = document.createElement("p");
-//         let p3El = document.createElement("p");
-
-//         h2El.textContent = data.city.name + " " + data.list[0].dt_txt.split(" ")[0];
-//         p1El.textContent = "Temp: " + data.list[0].main.temp;
-//         p2El.textContent = "Wind: " + data.list[0].wind.speed;
-//         p3El.textContent = "Humidity: " + data.list[0].main.humidity;
-
-//         currentWeatherEl.appendChild(h2El);
-//         currentWeatherEl.appendChild(p1El);
-//         currentWeatherEl.appendChild(p2El);
-//         currentWeatherEl.appendChild(p3El);
-
-//         for(let i = 1; i < 40; i += 8) {
-
-//             let card = createCard(data, i);
-
-//             console.log(createCard(data, i));
-//             forecastEl.appendChild(card);
-//         }
-
-//     });
-
+window.onload = function() {
+    loadHistoryArray();
+    addHistoryButtons();
+};
 
 function formSubmitHandeler(event) {
-    let text = document.querySelector(".form-control").value;
-    let apiUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + text + "&units=imperial&appid=7347a58ac895179cbb99b48ec4541594";
+    let cityName = document.querySelector(".form-control").value.toUpperCase();
+    let apiUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&units=imperial&appid=7347a58ac895179cbb99b48ec4541594";
 
     fetch(apiUrl)
     .then(function(response) {
         return response.json();
     })
     .then(function(data) {
-        
+        currentWeatherEl.innerHTML = "";
+        forecastEl.innerHTML = "";
+
         currentWeatherEl.appendChild(createCurrentWeather(data));
 
         for(let i = 1; i < 40; i += 8) {
@@ -69,6 +31,7 @@ function formSubmitHandeler(event) {
         }
     });
 
+    addToHistory(cityName);
     document.getElementById("form").reset();
 
     event.preventDefault();
@@ -97,7 +60,7 @@ function createCurrentWeather(weatherObj) {
     weatherDisplayEl.appendChild(p3El);
 
     return weatherDisplayEl;
-}
+};
 
 function createCard(weatherObj, i) {
     let icon = "https://openweathermap.org/img/w/" + weatherObj.list[i].weather[0].icon + ".png"
@@ -136,4 +99,71 @@ function createCard(weatherObj, i) {
     return cardEl;
 };
 
+function addToHistory(cityName) {
+    if(historyArray === undefined) {
+        historyArray = [];
+    }
+    if (historyArray.length === 0) {
+        historyArray.push(cityName);
+    } else if(!historyArray.includes(cityName)) {
+        historyArray.unshift(cityName);
+        if(historyArray.length > 8) {
+            historyArray.pop();
+        }
+    }
+    
+    localStorage.setItem("History", JSON.stringify(historyArray));
+    addHistoryButtons();
+};
+
+function loadHistoryArray() {
+    if(localStorage.getItem("History")) {
+        historyArray = JSON.parse(localStorage.getItem("History"));
+    }
+};
+
+function addHistoryButtons() {
+    if(historyArray !== undefined && historyArray.length > 0) {
+        let historyEl = document.querySelector("#history");
+        historyEl.innerHTML = "";
+
+        for(let city of historyArray) {
+            let historyButton = document.createElement("button");
+
+            historyButton.setAttribute("type", "button");
+            historyButton.classList = "btn btn-secondary w-100 my-2"
+            historyButton.textContent = city.toUpperCase();
+
+            historyEl.appendChild(historyButton);
+        }
+    }
+};
+
+function historyButtonHandeler(event) {
+    if(event.target.type === "button") {
+        let cityName = event.target.textContent;
+        let apiUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&units=imperial&appid=7347a58ac895179cbb99b48ec4541594";
+    
+        fetch(apiUrl)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            currentWeatherEl.innerHTML = "";
+            forecastEl.innerHTML = "";
+    
+            currentWeatherEl.appendChild(createCurrentWeather(data));
+    
+            for(let i = 1; i < 40; i += 8) {
+                let card = createCard(data, i);
+    
+                forecastEl.appendChild(card);
+            }
+        });
+    
+        addToHistory(cityName);
+    }
+};
+
 formEl.addEventListener("submit", formSubmitHandeler);
+historyContainerEl.addEventListener("click", historyButtonHandeler);
