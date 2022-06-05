@@ -11,27 +11,32 @@ window.onload = function() {
 };
 
 function formSubmitHandeler(event) {
-    let cityName = document.querySelector(".form-control").value.toUpperCase();
+    let cityName = document.querySelector(".form-control").value.trim().toUpperCase();
     let apiUrl = "https://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&units=imperial&appid=7347a58ac895179cbb99b48ec4541594";
+    
+    if(cityName != "") {
+        fetch(apiUrl)
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(data) {
+            currentWeatherEl.innerHTML = "";
+            forecastEl.innerHTML = "";
 
-    fetch(apiUrl)
-    .then(function(response) {
-        return response.json();
-    })
-    .then(function(data) {
-        currentWeatherEl.innerHTML = "";
-        forecastEl.innerHTML = "";
+            currentWeatherEl.appendChild(createCurrentWeather(data));
 
-        currentWeatherEl.appendChild(createCurrentWeather(data));
+            for(let i = 1; i < 40; i += 8) {
+                let card = createCard(data, i);
 
-        for(let i = 1; i < 40; i += 8) {
-            let card = createCard(data, i);
+                forecastEl.appendChild(card);
+            }
+        })
+        .catch(function(error) {
+            alert("Not a valid city.");
+        });
 
-            forecastEl.appendChild(card);
-        }
-    });
-
-    addToHistory(cityName);
+        addToHistory(cityName);
+    }
     document.getElementById("form").reset();
 
     event.preventDefault();
