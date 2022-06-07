@@ -21,7 +21,7 @@ function formSubmitHandeler(event) {
         })
         .then(function(data) {
             let oneCallApi = "https://api.openweathermap.org/data/2.5/onecall?lat=" + data[0].lat + "&lon=" + data[0].lon + "&exclude=minutely,hourly,alerts&units=imperial&appid=7347a58ac895179cbb99b48ec4541594";
-            console.log(data);
+
             return fetch(oneCallApi)
         })
         .then(function(response) {
@@ -30,12 +30,12 @@ function formSubmitHandeler(event) {
         .then(function(data) {
             currentWeatherEl.innerHTML = "";
             forecastEl.innerHTML = "";
-            console.log(data);
+
             currentWeatherEl.appendChild(createCurrentWeather(data, cityName));
 
             for(let i = 1; i < 6; i++) {
                 let card = createCard(data, i);
-                console.log(i);
+
                 forecastEl.appendChild(card);
             }
         })
@@ -61,7 +61,7 @@ function historyButtonHandeler(event) {
         })
         .then(function(data) {
             let oneCallApi = "https://api.openweathermap.org/data/2.5/onecall?lat=" + data[0].lat + "&lon=" + data[0].lon + "&exclude=minutely,hourly,alerts&units=imperial&appid=7347a58ac895179cbb99b48ec4541594";
-            console.log(data);
+
             return fetch(oneCallApi)
         })
         .then(function(response) {
@@ -70,12 +70,12 @@ function historyButtonHandeler(event) {
         .then(function(data) {
             currentWeatherEl.innerHTML = "";
             forecastEl.innerHTML = "";
-            console.log(data);
+
             currentWeatherEl.appendChild(createCurrentWeather(data, cityName));
 
             for(let i = 1; i < 6; i++) {
                 let card = createCard(data, i);
-                console.log(i);
+
                 forecastEl.appendChild(card);
             }
         })
