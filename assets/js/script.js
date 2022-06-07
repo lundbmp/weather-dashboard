@@ -12,7 +12,7 @@ window.onload = function() {
 
 function formSubmitHandeler(event) {
     let cityName = document.querySelector(".form-control").value.trim().toUpperCase();
-    let apiUrl = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&appid=7347a58ac895179cbb99b48ec4541594";
+    let apiUrl = "https://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&appid=7347a58ac895179cbb99b48ec4541594";
     
     if(cityName != "") {
         fetch(apiUrl)
