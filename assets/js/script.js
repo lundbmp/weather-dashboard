@@ -53,7 +53,7 @@ function formSubmitHandeler(event) {
 function historyButtonHandeler(event) {
     if(event.target.type === "button") {
         let cityName = event.target.textContent;
-        let apiUrl = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&appid=7347a58ac895179cbb99b48ec4541594";
+        let apiUrl = "https://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&appid=7347a58ac895179cbb99b48ec4541594";
     
         fetch(apiUrl)
         .then(function(response) {
